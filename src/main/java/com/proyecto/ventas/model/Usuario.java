@@ -1,7 +1,20 @@
 package com.proyecto.ventas.model;
 
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity //-->DEFINO-CLASE_ENTIDAD
+@Table(name ="usuarios") //-->SIRVE PARA MODIFICAR_EL_NOMBRE_DE_LA_TABLA_AL_SER_CREADO_EN_BD
 public class Usuario {
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) //-->PARA QUE ID SEA AUTOINCREMET
 	//atributos_de_la_clase_Usuario
 	private Integer id;
 	private String nombre;
@@ -11,11 +24,23 @@ public class Usuario {
 	private String telefono;
 	private String password;
 	
-	//constructor_sin_parametros
-	public Usuario() {
-		
-	}
 	
+	
+	@OneToMany(mappedBy = "usuario") //-->RELACIONAMOS UNO A MUCHOS / MAPEADO usuario_
+	//CREAMOS UN ATRIBUTO QUE NOS VA DEVOLVER UNA LISTA DE PRODUCTOS
+	private List<Producto>productos;
+	
+	
+	@OneToMany(mappedBy="usuario")//MAPEAMOS_CLASE > 
+	              //clase_obj
+	private List<Orden> ordenes;//OBTENER UNA LISTA DE ORDENES PARA USUARIO
+		
+	
+	
+	
+	//constructor_sin_parametros
+	public Usuario() {	
+	}
 	
 	//getters y setters_
 	public Integer getId() {
@@ -60,5 +85,23 @@ public class Usuario {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	//getters_y_setters _lista_productos
+	public List<Producto> getProductos() {
+		return productos;
+	}
+
+	public void setProductos(List<Producto> productos) {
+		this.productos = productos;
+	}
+	
+	//METODO toString()_
+	//VA RETORNAR TODOS LOS CAMPOS DE LA CLASE COMO UN SOLO STRING
+	@Override
+	public String toString() {
+		return "Usuario [id=" + id + ", nombre=" + nombre + ", username=" + username + ", email=" + email
+				+ ", direccion=" + direccion + ", telefono=" + telefono + ", password=" + password + "]";
+	}
+
 	
 }
