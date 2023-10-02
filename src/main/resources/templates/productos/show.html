@@ -54,8 +54,11 @@
         <td th:text="${producto.descripcion}"></td>
         <td th:text="${producto.cantidad}"></td>
         <td th:text="${producto.precio}"></td>
-      
-          <td><a class="btn btn-warning" href="#">Editar</a></td>
+        
+        <!--@apuntamos asia el controlador productos/url edit/y le vamos a pasar un id como parametro en la URL/ =que valor va llevar esta id -->
+         <!--id variable nombre iguales quele estamos enviando / (=${producto.id})obtenemos el valor de producto y obtenemos el id -->
+          <td><a class="btn btn-warning" th:href="@{productos/edit/{id}(id=${producto.id})}">Editar</a></td>
+          
           <td><a class="btn btn-danger" href="#">Eliminar</a></td>
         </tr>
         

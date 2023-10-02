@@ -5,12 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.proyecto.ventas.model.Producto;
 import com.proyecto.ventas.model.Usuario;
 import com.proyecto.ventas.service.ProductoService;
+
+import java.util.Optional;
 
 import org.slf4j.*;
 
@@ -54,7 +57,41 @@ public class ProductoController {
 		producto.setUsuario(u);//en_producto_vamos a pasar_usuario
 		
 		productoService.save(producto);//guardar_
+		
 		return "redirect:/productos";//PEDICION AL CONTROLADOR_VA CARGAR VISTA SHOW
 	}
+	
+	
+	//METODO PARA  EDITAR
+	@GetMapping("/edit/{id}")	//url_ {id} obtener_id de_registro al_que bamos_a_buscarlo y_pasarlo a vista_para_editarlo
+	public String edit(@PathVariable Integer id, Model model) {//@PathVariable-->PERMITE MAPEAR EL ID QUE VIENE EN LA URL PASARLA ALA VARIABLE continua_Integer id:
+		Producto producto = new Producto(); //en_este_obj_almacenamos_el_obj_buscado
+		//variable //tipo_producto//nombre_OptionalProducto=-->Esto_es lo_que_nos_devuelve cuando_hacemos la_busqueda_de_un_obj de_tipo_producto   
+		Optional<Producto> optionalProducto = productoService.get(id);//utilizamos_obj_productoService_hacemos la_invocasion_del_metodo		
+		//esto_trae_el_producto_buscado
+		producto=optionalProducto.get();//le_pasamos_el_productobuscado(que_esta_en_OPTIONALPRODUCTO)a __producto
+		
+		//test
+		LOGGER.info("Producto buscado: {}",producto);//{}=acontinuacion_viene una_variable_que_vamos a_imprimir
+		
+		//nos_envia_ala_vista_todo-el_obj_buscado
+		model.addAttribute("producto", producto);//variable_producto le_lleve_ala vista y le_pasamos el valor de_lo_que tiene_producto
+		
+		return "Productos/edit";//direccion_
+	}
+	
+	//METODO ACTUALIZAR
+	@PostMapping("/update")//ESTE METODO VA RESPONDER A UNA PETICION TIPO POST
+	public String update(Producto producto){//recibe_como parametros_un_obj_tipo_productos
+		
+		productoService.update(producto);//obj_productoService.update(pasamos_el_obj_producto)
+		return"redirect:/productos" ;	//redireccionamos_a_vistaProductos
+	}
+	
+	
+	
+	
+	
+	
 	
 }
