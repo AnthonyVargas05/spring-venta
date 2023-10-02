@@ -1,11 +1,15 @@
 package com.proyecto.ventas.service;
 
-import java.util.Optional;
+import java.util.List;
+
+import java.util.Optional;//importe_FindALL
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import com.proyecto.ventas.model.Producto;
+
 import com.proyecto.ventas.repository.ProductoRepository;
 
 //nos_permita_inyectar_en el controlador_esta_clase_para hacer_el_llamado_a_metds_CRUD
@@ -36,6 +40,12 @@ public class ProductServiceImpl implements ProductoService{//implementamos_clase
 	@Override
 	public void delete(Integer id) {	
 		productoRepository.deleteById(id);
+	}
+
+	//UTILIZAMOS EL OBJ Y METODO
+	@Override
+	public List<Producto> findAll() {		
+		return productoRepository.findAll();
 	}
 
 }
