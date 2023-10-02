@@ -15,6 +15,8 @@ import com.proyecto.ventas.service.ProductoService;
 
 import java.util.Optional;
 
+import javax.websocket.server.PathParam;
+
 import org.slf4j.*;
 
 
@@ -89,7 +91,13 @@ public class ProductoController {
 	}
 	
 	
-	
+	//METODO ELIMINAR
+	@GetMapping("/delete/{id}")//determinacion_url/_papeo_id
+	public String delete(@PathVariable Integer id) {//_notacion permite_mapeo_de la_variabe que_viene de_la URL y lo_pase ala_varible como_parametro
+		productoService.delete(id);//
+		return "redirect:/productos";
+		
+	}
 	
 	
 	
