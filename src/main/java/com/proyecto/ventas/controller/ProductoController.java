@@ -114,9 +114,12 @@ public class ProductoController {
 		//en_p vamos_a obtener_el producto_y //lo_buscamos atraves_de productoServicio//pasamos_id de_producto
 		p = productoService.get(producto.getId()).get();//obtenemos_la_imagen que_tenia				
 		producto.setImagen(p.getImagen());//le_volvemos_a_pasar_al_producto_que_estamos_editando
-	    }else {//cuando_se_edita_tambien_la_imagen
+	    }
+	    
+	    else {//cuando_se_edita_tambien_la_imagen
 			Producto p = new Producto();
 			p = productoService.get(producto.getId()).get();//nos_devuelva_todo-el_registro_que vamos_a_eliminar		
+			
 			//ELIMINAR CUANDO NO SEA IMAGEN POR DEFECTO
 			if (!p.getImagen().equals("defauld.jpg")) {//si_la_imagen_que esta_no_es_la_de_pordefecto
 				upload.deleteImage(p.getImagen());//procede_con_eliminacion
@@ -143,7 +146,7 @@ public class ProductoController {
 		p = productoService.get(id).get();//nos_devuelva_todo-el_registro_que vamos_a_eliminar		
 		
 		//ELIMINAR CUANDO NO SEA IMAGEN POR DEFECTO
-		if (!p.getImagen().equals("defauld.jpg")) {//si_la_imagen_que esta_no_es_la_de_pordefecto
+		if (!p.getImagen().equals("default.jpg")) {//si_la_imagen_que esta_no_es_la_de_pordefecto
 			upload.deleteImage(p.getImagen());//procede_con_eliminacion
 		}
 	
