@@ -17,6 +17,37 @@ public class UploadFileService {
 	// Vamos_a_almacenar_en_un_campo de_la base o_de_la_tabla_producto vamos_a_almacenar_el_nombre_de_la_imagen sin_embargo_la_imagen_como_la_vamos_almacenar_dentro_del_proyecto 
 	private String folder="images//";
 	
+	
+	
+	public String saveImage(MultipartFile file) throws IOException {
+		if (!file.isEmpty()) {
+			byte [] bytes=file.getBytes();
+			Path path =Paths.get(folder+file.getOriginalFilename());
+			Files.write(path, bytes);
+			return file.getOriginalFilename();
+		}
+		return "default.jpg";
+	}
+	
+	public void deleteImage(String nombre) {
+		String ruta="images//";
+		File file= new File(ruta+nombre);
+		file.delete();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
 	//METODO GUARDAR IMAGEN
 	public String saveImage(MultipartFile file) throws IOException {
 		if(file.isEmpty()) {//file=image.no es_vacio_pasamos a_bits 01
@@ -33,7 +64,8 @@ public class UploadFileService {
 		return"defauld.jpg";		
 	 }
 	
-	
+	*/
+	/*
 	//METODO ELIMINAR IMAGEN
 	public void deleteImage(String nombre) {//recibe_nombre_imagen
 	String ruta = "image//";//ruta_se_guarda_la_imagen
@@ -41,5 +73,5 @@ public class UploadFileService {
 	File file= new 	File(ruta+nombre);//constructor_
 	file.delete();
 	}
-	
+	*/
 }

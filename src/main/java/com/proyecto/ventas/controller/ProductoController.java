@@ -19,8 +19,6 @@ import com.proyecto.ventas.service.UploadFileService;
 import java.io.IOException;
 import java.util.Optional;
 
-import javax.websocket.server.PathParam;
-
 import org.slf4j.*;
 
 
@@ -70,35 +68,20 @@ public class ProductoController {
 		Usuario u = new Usuario(1,"","","","","","","");//creamos_un_usuario_respetar_tipodedato
 		
 		producto.setUsuario(u);//en_producto_vamos a pasar_usuario
-		
-		
-		//IMAGEN_
-		if (producto.getId()===null) {//cuando_se crea_un_producto /validamos_con id null
+			
+		//IMAGEN_ ===
+		if (producto.getId()==null) {//cuando_se crea_un_producto /validamos_con id null
 			String nombreImagen = upload.saveImage(file);//file = declaramos_como_parametro
 				producto.setImagen(nombreImagen); //en_producto me pase_esa variable que_trae el nombre_de la_imagen 
+		}else {  
 		}
-		
-		else {                   //isEmpty-->no tiene_nada ,cuando_se_modifique se_carga misma_imagen
-			if (file.isEmpty()) {//editamos_el_producto pero_no cambiamos_la_imagen
-				Producto p = new Producto();
-				//en_p vamos_a obtener_el producto_y //lo_buscamos atraves_de productoServicio//pasamos_id de_producto
-				p = productoService.get(producto.getId()).get();//obtenemos_la_imagen que_tenia				
-				producto.setImagen(p.getImagen());//le_volvemos_a_pasar_al_producto_que_estamos_editando
-			}else {//cambiar_la_imagen_cuando_editamos
-				String nombreImagen = upload.saveImage(file);//obtenemos_la_imagen_nueva,guardamos_
-				producto.setImagen(nombreImagen); //pasamos_al_producto
-			}	                                  
-	   }
-			
-
-		
-		
+	
 		productoService.save(producto);//guardar_
-		
 		return "redirect:/productos";//PEDICION AL CONTROLADOR_VA CARGAR VISTA SHOW
+	
 	}
 	
-	
+
 	
 	
 	//METODO PARA  EDITAR
@@ -119,24 +102,55 @@ public class ProductoController {
 		return "Productos/edit";//direccion_
 	}
 	
+	
+	
 	//METODO ACTUALIZAR
 	@PostMapping("/update")//ESTE METODO VA RESPONDER A UNA PETICION TIPO POST
-	public String update(Producto producto){//recibe_como parametros_un_obj_tipo_productos
-		
+	public String update(Producto producto,@RequestParam("img") MultipartFile  file)throws IOException{//recibe_como parametros_un_obj_tipo_productos
+       
+		//isEmpty-->no tiene_nada ,cuando_se_modifique se_carga misma_imagen
+	    if (file.isEmpty()) {//editamos_el_producto pero_no cambiamos_la_imagen
+		Producto p = new Producto();
+		//en_p vamos_a obtener_el producto_y //lo_buscamos atraves_de productoServicio//pasamos_id de_producto
+		p = productoService.get(producto.getId()).get();//obtenemos_la_imagen que_tenia				
+		producto.setImagen(p.getImagen());//le_volvemos_a_pasar_al_producto_que_estamos_editando
+	    }else {//cuando_se_edita_tambien_la_imagen
+			Producto p = new Producto();
+			p = productoService.get(producto.getId()).get();//nos_devuelva_todo-el_registro_que vamos_a_eliminar		
+			//ELIMINAR CUANDO NO SEA IMAGEN POR DEFECTO
+			if (!p.getImagen().equals("defauld.jpg")) {//si_la_imagen_que esta_no_es_la_de_pordefecto
+				upload.deleteImage(p.getImagen());//procede_con_eliminacion
+			
+			}
+	    	
+	    	String nombreImagen = upload.saveImage(file);//obtenemos_la_imagen_nueva,guardamos_
+			producto.setImagen(nombreImagen); //pasamos_al_producto
+		}	
+	    
 		productoService.update(producto);//obj_productoService.update(pasamos_el_obj_producto)
+			
 		return"redirect:/productos" ;	//redireccionamos_a_vistaProductos
 	}
+	
+	
 	
 	
 	//METODO ELIMINAR
 	@GetMapping("/delete/{id}")//determinacion_url/_papeo_id
 	public String delete(@PathVariable Integer id) {//_notacion permite_mapeo_de la_variabe que_viene de_la URL y lo_pase ala_varible como_parametro
+		
+		Producto p = new Producto();
+		p = productoService.get(id).get();//nos_devuelva_todo-el_registro_que vamos_a_eliminar		
+		
+		//ELIMINAR CUANDO NO SEA IMAGEN POR DEFECTO
+		if (!p.getImagen().equals("defauld.jpg")) {//si_la_imagen_que esta_no_es_la_de_pordefecto
+			upload.deleteImage(p.getImagen());//procede_con_eliminacion
+		}
+	
 		productoService.delete(id);//
 		return "redirect:/productos";
 		
 	}
 	
-	
-	
-	
+
 }
