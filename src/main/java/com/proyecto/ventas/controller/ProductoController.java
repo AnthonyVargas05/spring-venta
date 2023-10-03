@@ -8,11 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.proyecto.ventas.model.Producto;
 import com.proyecto.ventas.model.Usuario;
 import com.proyecto.ventas.service.ProductoService;
+import com.proyecto.ventas.service.UploadFileService;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import javax.websocket.server.PathParam;
@@ -33,6 +37,12 @@ public class ProductoController {
 	//DECLARAMOS_UNA VARIABLE DE TIPO PRODUCTOSERVICE_PARA ACCEDER ALOS METRODOS CRUD
 	private ProductoService productoService;
 	
+	//
+	@Autowired//para_inyectarla_ala_clase_producto_controler
+	private UploadFileService upload;//obj_
+	
+	
+	
 	
 	
 	@GetMapping("")                      //se_agrega_parametro
@@ -48,20 +58,47 @@ public class ProductoController {
 	 }
 	
 	
+	                                     
 	
-	//MAPEAR LA IMFORMACION DESDE EL BOTON GUARDAR PARA QUE SE GUARDE EN BD
-	@PostMapping("/save")//
-	public String save(Producto producto) {//VAMOS A RECIBIR UN OBJ DE TIPO PRODUCTO
+	//MAPEAR LA IMFORMACION DESDE EL BOTON GUARDAR PARA QUE SE GUARDE EN BD                    
+	@PostMapping("/save")    
+     //@RequestParam("img")=a esta_imagen lo_va traer_del atributo_img del_formulario//parametro_tipo: MultipartFile,  file
+	public String save(Producto producto,@RequestParam("img") MultipartFile  file)throws IOException {//VAMOS A RECIBIR UN OBJ DE TIPO PRODUCTO
+		
 		LOGGER.info("Este es el objeto producto{}",producto);//SIRVE PARA TESTEAR_GUARDAR/ {}= FORMA DE DECIR QUE ACONTINUACION VA VENIR UNA VARI9ABLE O OBJ (producto_obj)  
 	
 		Usuario u = new Usuario(1,"","","","","","","");//creamos_un_usuario_respetar_tipodedato
 		
 		producto.setUsuario(u);//en_producto_vamos a pasar_usuario
 		
+		
+		//IMAGEN_
+		if (producto.getId()===null) {//cuando_se crea_un_producto /validamos_con id null
+			String nombreImagen = upload.saveImage(file);//file = declaramos_como_parametro
+				producto.setImagen(nombreImagen); //en_producto me pase_esa variable que_trae el nombre_de la_imagen 
+		}
+		
+		else {                   //isEmpty-->no tiene_nada ,cuando_se_modifique se_carga misma_imagen
+			if (file.isEmpty()) {//editamos_el_producto pero_no cambiamos_la_imagen
+				Producto p = new Producto();
+				//en_p vamos_a obtener_el producto_y //lo_buscamos atraves_de productoServicio//pasamos_id de_producto
+				p = productoService.get(producto.getId()).get();//obtenemos_la_imagen que_tenia				
+				producto.setImagen(p.getImagen());//le_volvemos_a_pasar_al_producto_que_estamos_editando
+			}else {//cambiar_la_imagen_cuando_editamos
+				String nombreImagen = upload.saveImage(file);//obtenemos_la_imagen_nueva,guardamos_
+				producto.setImagen(nombreImagen); //pasamos_al_producto
+			}	                                  
+	   }
+			
+
+		
+		
 		productoService.save(producto);//guardar_
 		
 		return "redirect:/productos";//PEDICION AL CONTROLADOR_VA CARGAR VISTA SHOW
 	}
+	
+	
 	
 	
 	//METODO PARA  EDITAR
