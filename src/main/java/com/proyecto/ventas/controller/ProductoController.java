@@ -32,7 +32,7 @@ public class ProductoController {
 	
 	
 	@Autowired //-->PARA NO INSTANCIAR EN OBJ
-	//DECLARAMOS_UNA VARIABLE DE TIPO PRODUCTOSERVICE_PARA ACCEDER ALOS METRODOS CRUD
+  //DECLARAMOS_UNA VARIABLE DE TIPO PRODUCTOSERVICE_PARA ACCEDER ALOS METRODOS CRUD
 	private ProductoService productoService;
 	
 	//
@@ -108,30 +108,29 @@ public class ProductoController {
 	@PostMapping("/update")//ESTE METODO VA RESPONDER A UNA PETICION TIPO POST
 	public String update(Producto producto,@RequestParam("img") MultipartFile  file)throws IOException{//recibe_como parametros_un_obj_tipo_productos
        
+		//obtenemos_la_imagen que_tenia
+		//en_p vamos_a obtener_el producto_y //lo_buscamos atraves_de productoServicio//pasamos_id de_producto	
+		Producto p = new Producto();
+		p = productoService.get(producto.getId()).get();//nos_devuelva_todo-el_registro_que vamos_a_eliminar		
+		
+		
 		//isEmpty-->no tiene_nada ,cuando_se_modifique se_carga misma_imagen
 	    if (file.isEmpty()) {//editamos_el_producto pero_no cambiamos_la_imagen
-		Producto p = new Producto();
-		//en_p vamos_a obtener_el producto_y //lo_buscamos atraves_de productoServicio//pasamos_id de_producto
-		p = productoService.get(producto.getId()).get();//obtenemos_la_imagen que_tenia				
 		producto.setImagen(p.getImagen());//le_volvemos_a_pasar_al_producto_que_estamos_editando
 	    }
-	    
-	    else {//cuando_se_edita_tambien_la_imagen
-			Producto p = new Producto();
-			p = productoService.get(producto.getId()).get();//nos_devuelva_todo-el_registro_que vamos_a_eliminar		
-			
+        else {//cuando_se_edita_tambien_la_imagen			
 			//ELIMINAR CUANDO NO SEA IMAGEN POR DEFECTO
 			if (!p.getImagen().equals("defauld.jpg")) {//si_la_imagen_que esta_no_es_la_de_pordefecto
-				upload.deleteImage(p.getImagen());//procede_con_eliminacion
-			
-			}
-	    	
+				upload.deleteImage(p.getImagen());//procede_con_eliminacion			
+			}	    	
 	    	String nombreImagen = upload.saveImage(file);//obtenemos_la_imagen_nueva,guardamos_
 			producto.setImagen(nombreImagen); //pasamos_al_producto
 		}	
 	    
-		productoService.update(producto);//obj_productoService.update(pasamos_el_obj_producto)
-			
+	    producto.setUsuario(p.getUsuario());//con_esto_no_se_estaria_perdiendo_el_usuario_para_este_producto
+		
+	    productoService.update(producto);//obj_productoService.update(pasamos_el_obj_producto)			
+		
 		return"redirect:/productos" ;	//redireccionamos_a_vistaProductos
 	}
 	

@@ -13,15 +13,19 @@ import com.proyecto.ventas.model.Producto;
 import com.proyecto.ventas.repository.ProductoRepository;
 
 //nos_permita_inyectar_en el controlador_esta_clase_para hacer_el_llamado_a_metds_CRUD
-@Service
+@Service//componente_de servicio_de spring
 public class ProductServiceImpl implements ProductoService{//implementamos_claseInterface
 
 	
 	
-	@Autowired //-->sirve_para_decir_que_estamos_inyectanto _a_esta_clase_un objeto_
+	@Autowired //-->inyectanto_auna_instancia_deProductoRepository_
 	private ProductoRepository productoRepository;//DECLARAMOS UN OBJETO DE TIPO ProductoRepository
+	/*Esto es conocido como inyección de dependencias
+	 *  y permite que la clase ProductServiceImpl acceda 
+	 *  a los métodos proporcionados por ProductoRepository 
+	 *  para interactuar con la base de datos.*/
 	
-	
+	//Implementacion_metodos_de_la_interfaz
 	@Override
 	public Producto save(Producto producto) {
 		return productoRepository.save(producto);//

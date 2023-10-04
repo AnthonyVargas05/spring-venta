@@ -28,16 +28,16 @@ public class Usuario {
 	
 	
 	@OneToMany(mappedBy = "usuario") //-->RELACIONAMOS UNO A MUCHOS / MAPEADO usuario_
+
 	//CREAMOS UN ATRIBUTO QUE NOS VA DEVOLVER UNA LISTA DE PRODUCTOS
 	private List<Producto>productos;
 	
 	
 	@OneToMany(mappedBy="usuario")//MAPEAMOS_CLASE > 
-	              //clase_obj
+	            
+	//clase_obj
 	private List<Orden> ordenes;//OBTENER UNA LISTA DE ORDENES PARA USUARIO
 		
-	
-	
 	
 	//constructor_sin_parametros
 	public Usuario() {	
